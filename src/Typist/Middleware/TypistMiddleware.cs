@@ -38,28 +38,6 @@ namespace RyanDawkins.Typist.Middleware
                 return;
             }
 
-            //List<IActivity> toAdd = messageActivities.Aggregate(new List<IActivity>(), (activitiesToAdd, activity) =>
-            //{
-            //    int wordCount = TypistUtility.GetWordCount(activity.AsMessageActivity().Text);
-            //    int timeInMs = TypistUtility.CalculateTimeToType(_typistWordsPerMinute, wordCount);
-
-            //    Activity typingActivity = ((Activity)context.Request).CreateReply();
-            //    typingActivity.Type = ActivityTypes.Typing;
-            //    typingActivity.Value = timeInMs;
-
-            //    Activity delayActivity = ((Activity)context.Request).CreateReply();
-            //    delayActivity.Type = ActivityTypesEx.Delay;
-            //    delayActivity.Value = timeInMs;
-
-            //    activitiesToAdd.Add(typingActivity);
-            //    activitiesToAdd.Add(delayActivity);
-            //    activitiesToAdd.Add(activity);
-
-            //    return activitiesToAdd;
-            //});
-            //activities.Clear();
-            //toAdd.ForEach(activity => activities.Add(activity));
-
             messageActivities.ForEach(activity =>
             {
                 int wordCount = TypistUtility.GetWordCount(activity.AsMessageActivity().Text);
