@@ -5,9 +5,12 @@ The delay is determined by the number of words in the MessageActivity.Text field
 The purpose of this middleware is to give a more realistic feel to the bot as it simulates a person. Another reason is to prevent the user from having to scroll up to read a number of
 messages that may have came in from the bot all at once.
 
-# Usage
-This piece of middleware is intended for the latest version of the BotFramework which can be built from the [v4 github repository](http://github.com/microsoft/botbuilder-dotnet). 
+# Installing
+```bash
+Install-Package RyanDawkins.Typist –IncludePrerelease
+```
 
+# Usage
 ```c#
 int wordsPerMinute = 120;
 bot.Use(new TypistMiddleware(wordsPerMinute));

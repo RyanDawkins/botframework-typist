@@ -9,6 +9,16 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>RyanDawkins.Typist</PackageId>
+    <Version>1.0.0-pre</Version>
+    <Authors>Ryan Dawkins</Authors>
+    <PackageLicenseUrl>https://github.com/RyanDawkins/botframework-typist/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/RyanDawkins/botframework-typist</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/RyanDawkins/botframework-typist</RepositoryUrl>
+    <PackageTags>bots,botframework,botbuilder,typing,typist</PackageTags>
+    <Description>Typist Middleware to simulate a person is typing. This delays messages and sends the typing indicator between messages from the bot to the user.</Description>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.0.0-alpha20180221" />
