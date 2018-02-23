@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.ContextExtensions;
 using Microsoft.Bot.Builder.Middleware;
 using Microsoft.Bot.Schema;
+using static Microsoft.Bot.Builder.Middleware.MiddlewareSet;
 
 namespace RyanDawkins.Typist.Middleware
 {
     /// <summary>
     /// This typist middleware makes it appear as if the bot was a person typing by delaying the messages sent sequentially.
     /// </summary>
-    public class TypistMiddleware : ISendActivity
+    public class TypistMiddleware : Microsoft.Bot.Builder.Middleware.IMiddleware, IReceiveActivity, ISendActivity
     {
 
         private readonly int _typistWordsPerMinute;
@@ -36,27 +36,35 @@ namespace RyanDawkins.Typist.Middleware
                 await next();
                 return;
             }
-
-            foreach (IMessageActivity activity in messageActivities)
+            
+            List<IActivity> toAdd = activities.Aggregate(new List<IActivity>(), (activitiesToAdd, activity) =>
             {
-                string[] words = activity.Text.Split((char[])null);
+                string[] words = activity.AsMessageActivity().Text.Split((char[])null);
                 double timeInMinutes = ((double)words.Count() / _typistWordsPerMinute);
                 int timeInMs = (int)Math.Ceiling(timeInMinutes * SECONDS_PER_MINUTE * MILISECONDS_PER_SECOND) / 2;
 
-                for (int i = 0; i < (timeInMs / 2000); i++)
-                {
-                    // this keeps show typing visible for the duration of our delays.
-                    context.ShowTyping();
-                    await context.Delay(2000);
-                }
+                Activity typingActivity = ((Activity)context.Request).CreateReply();
+                typingActivity.Type = ActivityTypes.Typing;
+                typingActivity.Value = timeInMs;
 
-                // Prevent the activity from being pushed through the pipe after the middleware chain
-                activities.Remove(activity);
+                Activity delayActivity = ((Activity)context.Request).CreateReply();
+                delayActivity.Type = ActivityTypesEx.Delay;
+                delayActivity.Value = timeInMs;
 
-                // Push the activity now
-                await context.Bot.Adapter.Send(new List<IActivity>() { activity });
-            }
+                activitiesToAdd.Add(typingActivity);
+                activitiesToAdd.Add(delayActivity);
+                activitiesToAdd.Add(activity);
 
+                return activitiesToAdd;
+            });
+            activities.Clear();
+            toAdd.ForEach(activity => activities.Add(activity));
+
+            await next();
+        }
+
+        public async Task ReceiveActivity(IBotContext context, NextDelegate next)
+        {
             await next();
         }
     }
