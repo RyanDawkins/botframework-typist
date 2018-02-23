@@ -13,7 +13,7 @@ namespace RyanDawkins.Typist.Middleware
     /// <summary>
     /// This typist middleware makes it appear as if the bot was a person typing by delaying the messages sent sequentially.
     /// </summary>
-    public class TypistMiddleware : Microsoft.Bot.Builder.Middleware.IMiddleware, IReceiveActivity, ISendActivity
+    public class TypistMiddleware : Microsoft.Bot.Builder.Middleware.IMiddleware, ISendActivity
     {
 
         private readonly int _typistWordsPerMinute;
@@ -60,11 +60,6 @@ namespace RyanDawkins.Typist.Middleware
             activities.Clear();
             toAdd.ForEach(activity => activities.Add(activity));
 
-            await next();
-        }
-
-        public async Task ReceiveActivity(IBotContext context, NextDelegate next)
-        {
             await next();
         }
     }
