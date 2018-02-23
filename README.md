@@ -1,4 +1,5 @@
 # Typist Middleware #
+[![Travis Build Status](https://api.travis-ci.org/RyanDawkins/botframework-typist.svg?branch=master)](https://api.travis-ci.org/RyanDawkins/botframework-typist)
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/ryandawkins.typist?includePreReleases=true)](https://www.nuget.org/packages/RyanDawkins.Typist)
 
 # About
