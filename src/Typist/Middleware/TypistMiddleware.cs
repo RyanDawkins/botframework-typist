@@ -28,33 +28,27 @@ namespace RyanDawkins.Typist.Middleware
 
         public async Task SendActivity(IBotContext context, IList<IActivity> activities, MiddlewareSet.NextDelegate next)
         {
-            List<IMessageActivity> messageActivities = activities
+            activities
                 .Where(activity => activity.Type.Equals(ActivityTypes.Message))
                 .Select(activity => activity.AsMessageActivity())
-                .ToList();
-            if (!messageActivities.Any())
-            {
-                await next();
-                return;
-            }
+                .ToList()
+                .ForEach(activity =>
+                {
+                    int wordCount = TypistUtility.GetWordCount(activity.Text);
+                    int timeInMs = TypistUtility.CalculateTimeToType(_typistWordsPerMinute, wordCount);
 
-            messageActivities.ForEach(activity =>
-            {
-                int wordCount = TypistUtility.GetWordCount(activity.AsMessageActivity().Text);
-                int timeInMs = TypistUtility.CalculateTimeToType(_typistWordsPerMinute, wordCount);
+                    Activity typingActivity = ((Activity)context.Request).CreateReply();
+                    typingActivity.Type = ActivityTypes.Typing;
+                    typingActivity.Value = timeInMs;
 
-                Activity typingActivity = ((Activity)context.Request).CreateReply();
-                typingActivity.Type = ActivityTypes.Typing;
-                typingActivity.Value = timeInMs;
+                    Activity delayActivity = ((Activity)context.Request).CreateReply();
+                    delayActivity.Type = ActivityTypesEx.Delay;
+                    delayActivity.Value = timeInMs;
 
-                Activity delayActivity = ((Activity)context.Request).CreateReply();
-                delayActivity.Type = ActivityTypesEx.Delay;
-                delayActivity.Value = timeInMs;
-
-                int indexOfActivity = activities.IndexOf(activity);
-                activities.Insert(indexOfActivity, delayActivity);
-                activities.Insert(indexOfActivity, typingActivity);
-            });
+                    int indexOfActivity = activities.IndexOf(activity);
+                    activities.Insert(indexOfActivity, delayActivity);
+                    activities.Insert(indexOfActivity, typingActivity);
+                });
 
             await next();
         }

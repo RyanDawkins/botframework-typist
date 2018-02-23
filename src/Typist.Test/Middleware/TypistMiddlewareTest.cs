@@ -24,6 +24,9 @@ namespace Typist.Test.Middleware
             _middleware = new TypistMiddleware(WORDS_PER_MINUTE);
         }
 
+        /// <summary>
+        /// Tests to ensure message activities have a delay and typing activity before them.
+        /// </summary>
         [Fact]
         public async void EnsureCorrectActivityOrder()
         {
@@ -33,6 +36,11 @@ namespace Typist.Test.Middleware
                 {
                     Type = ActivityTypes.Message,
                     Text = "Hello world"
+                },
+                new Activity()
+                {
+                    Type = ActivityTypes.Message,
+                    Text = "Whoah horsey!"
                 }
             };
 
@@ -75,6 +83,27 @@ namespace Typist.Test.Middleware
                         break;
                 }
             }
+        }
+
+        [Fact]
+        public async void EnsureNonMessageActivityDoesNotBlowUp()
+        {
+            List<IActivity> activities = new List<IActivity>()
+            {
+                new Activity()
+                {
+                    Type = ActivityTypes.ConversationUpdate,
+                    Text = "User joined session"
+                }
+            };
+
+            TestAdapter testAdapter = new TestAdapter();
+            IActivity activity = testAdapter.MakeActivity("");
+            BotContext context = new BotContext(testAdapter, activity);
+
+            Mock<NextDelegate> next = new Mock<NextDelegate>();
+
+            await _middleware.SendActivity(context, activities, next.Object);
         }
 
     }

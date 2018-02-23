@@ -17,7 +17,7 @@ namespace RyanDawkins.Typist.Utility
         /// <returns>the number of words in the message</returns>
         public static int GetWordCount(string message)
         {
-            return message.Split((char[])null).Length;
+            return message.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).Length;
         }
 
         /// <summary>
