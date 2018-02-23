@@ -16,4 +16,4 @@ int wordsPerMinute = 120;
 bot.Use(new TypistMiddleware(wordsPerMinute));
 ```
 
-See the [Sample](https://github.com/RyanDawkins/botframework-typist/blob/master/src/Sample/Controllers/MessagesController.cs) for more details on how to add this to your project.
+See the [Sample](https://github.com/RyanDawkins/botframework-typist/blob/master/sample/Sample/Controllers/MessagesController.cs) for more details on how to add this to your project.
