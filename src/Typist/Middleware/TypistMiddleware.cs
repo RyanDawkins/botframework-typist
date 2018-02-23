@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Middleware;
 using Microsoft.Bot.Schema;
+using RyanDawkins.Typist.Utility;
 using static Microsoft.Bot.Builder.Middleware.MiddlewareSet;
 
 namespace RyanDawkins.Typist.Middleware
@@ -36,12 +37,33 @@ namespace RyanDawkins.Typist.Middleware
                 await next();
                 return;
             }
-            
-            List<IActivity> toAdd = activities.Aggregate(new List<IActivity>(), (activitiesToAdd, activity) =>
+
+            //List<IActivity> toAdd = messageActivities.Aggregate(new List<IActivity>(), (activitiesToAdd, activity) =>
+            //{
+            //    int wordCount = TypistUtility.GetWordCount(activity.AsMessageActivity().Text);
+            //    int timeInMs = TypistUtility.CalculateTimeToType(_typistWordsPerMinute, wordCount);
+
+            //    Activity typingActivity = ((Activity)context.Request).CreateReply();
+            //    typingActivity.Type = ActivityTypes.Typing;
+            //    typingActivity.Value = timeInMs;
+
+            //    Activity delayActivity = ((Activity)context.Request).CreateReply();
+            //    delayActivity.Type = ActivityTypesEx.Delay;
+            //    delayActivity.Value = timeInMs;
+
+            //    activitiesToAdd.Add(typingActivity);
+            //    activitiesToAdd.Add(delayActivity);
+            //    activitiesToAdd.Add(activity);
+
+            //    return activitiesToAdd;
+            //});
+            //activities.Clear();
+            //toAdd.ForEach(activity => activities.Add(activity));
+
+            messageActivities.ForEach(activity =>
             {
-                string[] words = activity.AsMessageActivity().Text.Split((char[])null);
-                double timeInMinutes = ((double)words.Count() / _typistWordsPerMinute);
-                int timeInMs = (int)Math.Ceiling(timeInMinutes * SECONDS_PER_MINUTE * MILISECONDS_PER_SECOND) / 2;
+                int wordCount = TypistUtility.GetWordCount(activity.AsMessageActivity().Text);
+                int timeInMs = TypistUtility.CalculateTimeToType(_typistWordsPerMinute, wordCount);
 
                 Activity typingActivity = ((Activity)context.Request).CreateReply();
                 typingActivity.Type = ActivityTypes.Typing;
@@ -51,14 +73,10 @@ namespace RyanDawkins.Typist.Middleware
                 delayActivity.Type = ActivityTypesEx.Delay;
                 delayActivity.Value = timeInMs;
 
-                activitiesToAdd.Add(typingActivity);
-                activitiesToAdd.Add(delayActivity);
-                activitiesToAdd.Add(activity);
-
-                return activitiesToAdd;
+                int indexOfActivity = activities.IndexOf(activity);
+                activities.Insert(indexOfActivity, delayActivity);
+                activities.Insert(indexOfActivity, typingActivity);
             });
-            activities.Clear();
-            toAdd.ForEach(activity => activities.Add(activity));
 
             await next();
         }
