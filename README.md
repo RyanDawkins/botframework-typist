@@ -1,5 +1,4 @@
 # Typist Middleware #
-https://buildstats.info/nuget/ryandawkins.typist?includePreReleases=true
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/ryandawkins.typist?includePreReleases=true)](https://www.nuget.org/packages/RyanDawkins.Typist)
 
 # About
