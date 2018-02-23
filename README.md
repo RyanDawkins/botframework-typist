@@ -1,5 +1,5 @@
 # Typist Middleware #
-[![Travis Build Status](https://api.travis-ci.org/RyanDawkins/botframework-typist.svg?branch=master)](https://api.travis-ci.org/RyanDawkins/botframework-typist) [![NuGet Version and Downloads count](https://buildstats.info/nuget/ryandawkins.typist?includePreReleases=true)](https://www.nuget.org/packages/RyanDawkins.Typist)
+[![Travis Build Status](https://api.travis-ci.org/RyanDawkins/botframework-typist.svg?branch=master)](https://travis-ci.org/RyanDawkins/botframework-typist) [![NuGet Version and Downloads count](https://buildstats.info/nuget/ryandawkins.typist?includePreReleases=true)](https://www.nuget.org/packages/RyanDawkins.Typist)
 
 # About
 This piece of middleware is to simulate that a real person is typing between messages that are sent from the bot to the user. This is done by sending a typing indicator between messages. 
