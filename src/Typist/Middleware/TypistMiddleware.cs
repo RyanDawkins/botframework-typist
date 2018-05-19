@@ -29,8 +29,7 @@ namespace RyanDawkins.Typist.Middleware
         public async Task SendActivity(IBotContext context, IList<IActivity> activities, MiddlewareSet.NextDelegate next)
         {
             activities
-                .Where(activity => activity.Type.Equals(ActivityTypes.Message))
-                .Select(activity => activity.AsMessageActivity())
+                .OfType<IMessageActivity>()
                 .ToList()
                 .ForEach(activity =>
                 {
