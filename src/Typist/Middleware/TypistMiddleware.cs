@@ -19,7 +19,7 @@ namespace RyanDawkins.Typist.Middleware
 
         private readonly int _typistWordsPerMinute;
         const int SECONDS_PER_MINUTE = 60;
-        const int MILISECONDS_PER_SECOND = 1000;
+        const int MILLISECONDS_PER_SECOND = 1000;
 
         public TypistMiddleware(int typistWordsPerMinute)
         {
